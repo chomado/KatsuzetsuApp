@@ -1,4 +1,4 @@
-﻿namespace LineKatsuzetsu.Settings
+﻿namespace KatsuzetsuApp.Settings
 {
     public static class SlotNames
     {

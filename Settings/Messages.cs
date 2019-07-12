@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LineKatsuzetsu.Settings
+namespace KatsuzetsuApp.Settings
 {
     public static class Messages
     {

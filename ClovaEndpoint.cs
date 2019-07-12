@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 
 using CEK.CSharp;
 using CEK.CSharp.Models;
-using LineKatsuzetsu.Settings;
+using KatsuzetsuApp.Settings;
 
-namespace LineKatsuzetsu
+namespace KatsuzetsuApp
 {
     public static class ClovaEndpoint
     {
