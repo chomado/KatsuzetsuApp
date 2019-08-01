@@ -11,6 +11,9 @@ using Newtonsoft.Json;
 using CEK.CSharp;
 using CEK.CSharp.Models;
 using KatsuzetsuApp.Settings;
+using Line.Messaging;
+using System.Collections.Generic;
+using LineKatsuzetsu.Settings;
 
 namespace KatsuzetsuApp
 {
@@ -51,7 +54,7 @@ namespace KatsuzetsuApp
             }
             return response;
         }
-        private static Task HandleIntentRequestAsync(CEKRequest request, CEKResponse response)
+        private static async Task<Task> HandleIntentRequestAsync(CEKRequest request, CEKResponse response)
         {
             void fillSlotIfExist(string slotName, ref string word)
             {
@@ -69,13 +72,34 @@ namespace KatsuzetsuApp
                     fillSlotIfExist(SlotNames.NamamugiNamagomeNamatamago, ref word);
                     fillSlotIfExist(SlotNames.SyusyaSentaku, ref word);
 
+                    // 滑舌オーケー
                     if (!string.IsNullOrEmpty(word))
                     {
+                        // LINE messaging に投げる
+                        var messagingClient = new LineMessagingClient(channelAccessToken: Keys.token);
+                        await messagingClient.PushMessageAsync(
+                            to: Keys.userId,
+                            messages: new List<ISendMessage>
+                            {
+                                new TextMessage(string.Format(Messages.LineCongratsMessage, word)),
+                            }
+                        );
+                        // Clova に喋らせる
                         response.ShouldEndSession = true;
                         response.AddText(Messages.GenerateCongratsMessage(word));
                     }
+                    // 滑舌ダメです
                     else
                     {
+                        var messagingClient = new LineMessagingClient(channelAccessToken: Keys.token);
+                        await messagingClient.PushMessageAsync(
+                            to: Keys.userId,
+                            messages: new List<ISendMessage>
+                            {
+                                new TextMessage(Messages.LineWrongMessage),
+                            }
+                        );
+
                         response.ShouldEndSession = false;
                         response.AddText(Messages.WrongPronunciationMessage);
                     }
